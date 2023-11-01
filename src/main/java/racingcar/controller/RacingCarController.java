@@ -34,7 +34,7 @@ public class RacingCarController {
         try {
             checkCarNameValidate(carNameInfoMap);
         } catch (IllegalArgumentException e){
-            return;
+            throw e;
         }
 
         //시도 횟수를 입력 받는다.
@@ -42,10 +42,10 @@ public class RacingCarController {
 
         //실행 결과 출력
         System.out.println("실행 결과");
-        printExecutedResult(numberOfAttempts, carNameInfoMap);
+        Map<String, String> stringStringMap = printExecutedResult(numberOfAttempts, carNameInfoMap);
 
         //최종 우승자 리스트
-        List<String> winnerList = executedFinalWinnerList(carNameInfoMap);
+        List<String> winnerList = executedFinalWinnerList(stringStringMap);
 
         //최종 우승자 출력
         printFinalWinner(winnerList);
@@ -77,7 +77,7 @@ public class RacingCarController {
     }
 
     public void printFinalWinner(List<String> winnerList){
-        System.out.println("최종 우승자: " + String.join(", ",winnerList));
+        System.out.println("최종 우승자 : " + String.join(", ",winnerList));
     }
 
     private Map<String, Integer> extractedIntegerValueMap(Map<String, String> resultMap) {
@@ -88,11 +88,19 @@ public class RacingCarController {
             int countDistance = car.countDistance(carDistance);
             integerResultValueMap.put(carName, countDistance);
         }
+
         return integerResultValueMap;
 
     }
 
-    private void printExecutedResult(int numberOfAttempts, Map<String, String> carNameInfoMap) {
+
+    /***
+     * 실행결과를 출력할 때 사용합니다.
+     *
+     * @param numberOfAttempts
+     * @param carNameInfoMap
+     */
+    private Map<String, String> printExecutedResult(int numberOfAttempts, Map<String, String> carNameInfoMap) {
         final Map<String, String> stringResultValueMap = new Hashtable<>();
 
         for (int index = 0; index < numberOfAttempts; index++){
@@ -106,14 +114,16 @@ public class RacingCarController {
             }
             System.out.println();
         }
+
+        return stringResultValueMap;
     }
 
     private boolean checkCarNameValidate(Map<String, String> maps) {
 
         for (String carName : maps.keySet()) {
-            if (carValidator.validateCarLength(carName)){
+            if (!carValidator.validateCarLength(carName)){
                 throw new IllegalArgumentException();
-            } else if (carValidator.validateCarName(carName)){
+            } else if (!carValidator.validateCarName(carName)){
                 throw new IllegalArgumentException();
             }
         }
