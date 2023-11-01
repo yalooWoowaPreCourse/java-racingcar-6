@@ -26,7 +26,11 @@ public class Car {
     }
 
     public int countDistance(String distance){
-        return (int) distance.chars().filter(c -> c== '-').count();
+
+        int sumDistance=  (int) distance.chars().filter(c -> equals("-")).count();
+
+        return sumDistance;
+
     }
 
     private static String[] splitCarNames(String allCarNames){
